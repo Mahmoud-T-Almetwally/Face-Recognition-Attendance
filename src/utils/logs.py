@@ -1,6 +1,6 @@
 import logging.config
 import sys
-from log_formatters import CsvFormatter
+from utils.log_formatters import CsvFormatter
 from datetime import datetime
 
 def setup_logging():
