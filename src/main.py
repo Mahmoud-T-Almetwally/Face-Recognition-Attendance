@@ -8,7 +8,7 @@ import sys
 from logging import getLogger
 
 setup_logging()
-logger = getLogger()
+logger = getLogger(__name__)
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
