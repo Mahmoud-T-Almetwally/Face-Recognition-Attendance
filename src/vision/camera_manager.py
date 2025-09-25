@@ -2,7 +2,10 @@ import cv2
 from PyQt6.QtCore import QObject, pyqtSignal, pyqtSlot
 import numpy as np
 
+from .face_analyzer import FaceAnalyzer
+
 from logging import getLogger
+
 
 logger = getLogger(__name__)
 
@@ -12,7 +15,7 @@ class CameraWorker(QObject):
     A worker that captures video frames. It's designed to live in a
     long-running QThread.
     """
-    frame_ready = pyqtSignal(np.ndarray)
+    frame_ready = pyqtSignal(np.ndarray, list)
     error = pyqtSignal(str)
     finished = pyqtSignal()
 
@@ -20,6 +23,7 @@ class CameraWorker(QObject):
         super().__init__()
         self.camera_index = camera_index
         self._is_running = False
+        self.face_analyzer = FaceAnalyzer()
 
     @pyqtSlot()
     def start_capture(self):
@@ -28,9 +32,10 @@ class CameraWorker(QObject):
         triggered from the main thread.
         """
         if self._is_running:
-            return 
+            return
 
         self._is_running = True
+        self.face_analyzer.prepare()
         cap = cv2.VideoCapture(self.camera_index)
         
         if not cap.isOpened():
@@ -45,8 +50,10 @@ class CameraWorker(QObject):
                 self.error.emit("Error: Could not read frame from camera.")
                 self._is_running = False
                 break
+
+            processed_frame, faces = self.face_analyzer.process_frame(frame)
             
-            self.frame_ready.emit(frame)
+            self.frame_ready.emit(processed_frame, faces)
 
         if cap.isOpened():
             cap.release()
