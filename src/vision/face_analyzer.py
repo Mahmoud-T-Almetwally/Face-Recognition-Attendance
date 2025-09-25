@@ -64,6 +64,6 @@ class FaceAnalyzer:
             
             det_score = face.det_score
             cv2.putText(frame, f"{det_score * 100:.2f}%", (bbox[0], bbox[1] - 10), 
-                        cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 1)
+                        cv2.FONT_HERSHEY_SIMPLEX, 0.2, (0, 255, 0), 1)
 
         return frame

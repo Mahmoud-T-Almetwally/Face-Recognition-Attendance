@@ -50,11 +50,17 @@ QSplitter::handle:hover {
     border-radius: 4px;
 }
 
-#results_list_widget { 
+#results_list { 
     background-color: #21252d;
     border: 1px solid #353b48;
     border-radius: 4px;
     outline: 0; 
+}
+
+#profile_image {
+    height: 96;
+    width: 96;
+    margin-bottom: 2lvh;
 }
 
 QListWidget::item {
@@ -66,7 +72,6 @@ QListWidget::item:hover {
     background-color: #353b48;
 }
 
-/* Progress Bar for Confidence Score */
 QProgressBar {
     border: 1px solid #4a5263;
     border-radius: 4px;
@@ -77,12 +82,11 @@ QProgressBar {
 }
 
 QProgressBar::chunk {
-    background-color: #78a5e7; /* A nice accent color */
+    background-color: #78a5e7; 
     border-radius: 3px;
     margin: 0.5px;
 }
 
-/* StatusBar Styling */
 QStatusBar {
     background-color: #353b48;
     font-size: 11px;

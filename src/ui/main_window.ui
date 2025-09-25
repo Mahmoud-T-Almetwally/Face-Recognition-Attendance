@@ -36,7 +36,7 @@
      </widget>
     </item>
     <item>
-     <widget class="QListWidget" name="results_list">
+     <widget class="ResizableListWidget" name="results_list">
       <property name="sizePolicy">
        <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
         <horstretch>0</horstretch>
@@ -151,6 +151,13 @@
    </property>
   </action>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>ResizableListWidget</class>
+   <extends>QListWidget</extends>
+   <header>views/resizeable_list_widget</header>
+  </customwidget>
+ </customwidgets>
  <resources>
   <include location="resources/icon_resources.qrc"/>
  </resources>

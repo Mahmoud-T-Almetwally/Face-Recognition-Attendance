@@ -29,7 +29,7 @@ class Ui_MainWindow(object):
         self.video_display_label.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
         self.video_display_label.setObjectName("video_display_label")
         self.horizontalLayout.addWidget(self.video_display_label)
-        self.results_list = QtWidgets.QListWidget(parent=self.centralwidget)
+        self.results_list = ResizableListWidget(parent=self.centralwidget)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Preferred, QtWidgets.QSizePolicy.Policy.Expanding)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -101,3 +101,4 @@ class Ui_MainWindow(object):
         self.actionAttendance.setText(_translate("MainWindow", "Attendance"))
         self.actionAttendance.setToolTip(_translate("MainWindow", "Display Full Attendance Record"))
         self.actionAttendance.setShortcut(_translate("MainWindow", "Ctrl+A"))
+from views.resizeable_list_widget import ResizableListWidget

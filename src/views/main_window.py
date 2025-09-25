@@ -1,6 +1,7 @@
 from ui.main_window_ui import Ui_MainWindow
+from views.result_item_widget import ResultItemWidget
 
-from PyQt6.QtWidgets import QMainWindow, QSizePolicy
+from PyQt6.QtWidgets import QMainWindow, QSizePolicy, QListWidgetItem
 from PyQt6.QtCore import QThread, Qt, pyqtSignal
 from PyQt6.QtGui import QImage, QPixmap
 
@@ -102,9 +103,6 @@ class MainWindow(QMainWindow):
         Args:
             frame: The captured video frame as a NumPy array.
         """
-
-        # For now, we will just display the raw frame.
-        # detected_frame = self.face_analyzer.process_frame(frame)
         
         rgb_image = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
         h, w, ch = rgb_image.shape
