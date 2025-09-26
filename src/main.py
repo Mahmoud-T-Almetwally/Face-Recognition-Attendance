@@ -20,6 +20,10 @@ if __name__ == "__main__":
     except FileNotFoundError:
         logger.warning("Stylesheet not found. Please create a 'style.qss' file.")
 
-    window = MainWindow()
-    window.show()
-    sys.exit(app.exec())
+    try:
+        window = MainWindow()
+        window.show()
+        sys.exit(app.exec())
+    except Exception as e:
+        logger.error(f"Caught Error: {e}")
+        sys.exit()

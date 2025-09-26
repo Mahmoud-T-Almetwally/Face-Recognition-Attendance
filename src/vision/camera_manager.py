@@ -19,11 +19,11 @@ class CameraWorker(QObject):
     error = pyqtSignal(str)
     finished = pyqtSignal()
 
-    def __init__(self, camera_index=0):
+    def __init__(self, face_analyzer: FaceAnalyzer, camera_index=0):
         super().__init__()
         self.camera_index = camera_index
         self._is_running = False
-        self.face_analyzer = FaceAnalyzer()
+        self.face_analyzer = face_analyzer
 
     @pyqtSlot()
     def start_capture(self):
@@ -35,7 +35,6 @@ class CameraWorker(QObject):
             return
 
         self._is_running = True
-        self.face_analyzer.prepare()
         cap = cv2.VideoCapture(self.camera_index)
         
         if not cap.isOpened():
