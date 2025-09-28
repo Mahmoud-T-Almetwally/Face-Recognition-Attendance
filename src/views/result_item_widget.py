@@ -1,5 +1,6 @@
 from PyQt6.QtWidgets import QWidget
 from PyQt6.QtGui import QPixmap
+from PyQt6.QtCore import Qt
 
 import os
 import logging
@@ -38,7 +39,11 @@ class ResultItemWidget(QWidget):
         
         if icon_path:
             pixmap = QPixmap(icon_path)
-            self.ui.profile_image.setPixmap(pixmap)
+            container_size = self.ui.profile_image.size()
+            scaled_pixmap = pixmap.scaled(container_size, 
+                                        Qt.AspectRatioMode.KeepAspectRatio, 
+                                        Qt.TransformationMode.SmoothTransformation)
+            self.ui.profile_image.setPixmap(scaled_pixmap)
         elif os.path.exists("./data/students/default.png"):
 
             logger.info("No Student Profile Image found, Loading Default Profile Image.")

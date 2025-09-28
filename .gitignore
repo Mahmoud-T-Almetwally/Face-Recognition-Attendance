@@ -210,5 +210,6 @@ __marimo__/
 attendance.csv
 
 sample_images
-sample_images/*
+sample_images/*.png
+students/
 model_cache

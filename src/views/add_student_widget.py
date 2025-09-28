@@ -66,7 +66,7 @@ class AddStudentDialog(QDialog):
             
             if student_name and self.selected_image_path:
                 return {
-                    "name": student_name,
-                    "image_path": self.selected_image_path
+                    "student_name": student_name,
+                    "student_image_path": self.selected_image_path
                 }
         return None

@@ -3,7 +3,7 @@ import sqlite_vec
 import numpy as np
 import logging
 import json
-from typing import List, Literal
+from typing import List, Literal, Dict
 
 from .db_models import Student, StudentResult, StudentRecord, AttendanceRecord
 
@@ -61,6 +61,15 @@ class DatabaseManager:
             """)
             logger.info("Tables created or already exist.")
 
+    def _normalize_embedding(self, embedding: np.ndarray) -> np.ndarray:
+        """
+        L2-normalizes a vector to have a magnitude of 1.
+        """
+        norm = np.linalg.norm(embedding)
+        if norm == 0:
+            return embedding
+        return embedding / norm
+
     def add_student(self, student: Student) -> bool:
         try:
             with self.conn:
@@ -69,7 +78,10 @@ class DatabaseManager:
                     (student.student_id, student.student_name, student.student_image_path)
                 )
                 student_rowid = cursor.lastrowid
-                embedding_json = json.dumps(student.student_face_embedding.tolist())
+
+                normalized_embedding = self._normalize_embedding(student.student_face_embedding)
+                embedding_json = json.dumps(normalized_embedding.tolist())
+
                 self.conn.execute(
                     "INSERT INTO vec_students (rowid, face_embedding) VALUES (?, ?)",
                     (student_rowid, embedding_json)
@@ -96,7 +108,9 @@ class DatabaseManager:
         return [StudentRecord(**dict(row)) for row in cursor.fetchall()]
 
     def find_similar_students(self, query_embedding: np.ndarray, k: int = 5) -> List[StudentResult]:
-        query_json = json.dumps(query_embedding.tolist())
+        
+        normalized_query_embedding = self._normalize_embedding(query_embedding)
+        query_json = json.dumps(normalized_query_embedding.tolist())
         
         cursor = self.conn.execute("""
             SELECT
@@ -112,17 +126,40 @@ class DatabaseManager:
         for row in cursor.fetchall():
             l2_distance = row['distance']
             similarity = 1 - (l2_distance**2) / 2
+
+            similarity_score = max(0.0, similarity)
             
             student_data = {
                 "student_id": row['student_id'],
                 "student_name": row['student_name'],
                 "student_image_path": row['student_image_path'],
-                "student_face_embedding": np.frombuffer(row['face_embedding'], dtype=np.float32),
-                "similarity_score": similarity
+                "similarity_score": similarity_score
             }
             results.append(StudentResult(**student_data))
             
         return results
+    
+    def find_similar_students_bulk(self, query_embeddings: List[np.ndarray], k: int = 5) -> Dict[int, List[StudentResult]]:
+        """
+        Finds similar students for a batch of query embeddings.
+
+        Args:
+            query_embeddings: A list of face embeddings (as numpy arrays) to search for.
+            k: The number of nearest neighbors to return for each embedding.
+
+        Returns:
+            A dictionary where keys are the original indices of the query_embeddings
+            and values are lists of StudentResult objects.
+        """
+        bulk_results = {}
+        for i, embedding in enumerate(query_embeddings):
+            try:
+                bulk_results[i] = self.find_similar_students(embedding, k)
+            except Exception as e:
+                logger.error(f"Error processing embedding at index {i}: {e}")
+                bulk_results[i] = []
+        
+        return bulk_results
     
     def get_all_attendance(self, page: int = 1, page_size: int = 20) -> List[AttendanceRecord]:
         offset = (page - 1) * page_size

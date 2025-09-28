@@ -27,7 +27,6 @@ class StudentResult(BaseModel):
     student_id: str = Field(..., description="The unique ID of the student")
     student_name: str = Field(..., description="The name of the student")
     student_image_path: str = Field(..., description="The profile image path of the student")
-    student_face_embedding: np.ndarray = Field(..., description="The 512-dim embedding vector")
     similarity_score: float = Field(..., description="The similarity score to the search vector")
 
 
